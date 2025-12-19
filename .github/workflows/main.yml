@@ -1,0 +1,39 @@
+name: CI Pipeline
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Получаем код из репозитория
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Устанавливаем Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Укажите вашу версию
+
+      # 3. Кэшируем зависимости для ускорения
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-
+
+      # 4. Устанавливаем зависимости
+      - name: Install dependencies
+        run: npm ci
+
+      # 5. Проверяем типы TypeScript
+      - name: Run TypeScript compiler
+        run: npx tsc --noEmit
+
+      # 6. Собираем проект (если есть скрипт build)
+      - name: Build project
+        run: npm run build --if-present
