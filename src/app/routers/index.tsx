@@ -35,7 +35,7 @@ export const router = createBrowserRouter([
         <Outlet />
       </AppLayout>
     ),
-    errorElement: <div>error</div>,
+    errorElement: <div>Ошибка</div>,
     children: [
       {
         index: true,
